@@ -299,3 +299,8 @@ pip-selfcheck.json
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,venv,python,django
 
 # py -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+secrets.json
+**/migrations/**_initial.py
+**/migrations/**_
+
+!**/migrations/_init_.py
