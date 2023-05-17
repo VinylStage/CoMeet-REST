@@ -8,14 +8,13 @@
 
     poetry env use py
 
-    source .venv/scripts/activate
-
 #### window기준
+
+    source .venv/scripts/activate
 
 #### mac은 해당 path를 찾아주어 적용하면 됨
 
     poetry env info --path
-
 
 ### 종속패키지 설치
 
@@ -32,7 +31,7 @@
 #### requirements에서 poetry로 이동시
 
     cat requirements.txt | grep -E '^[^# ]' | cut -d= -f1 | xargs -n 1 poetry add
-    
+
 #### poetry에서 requirements로 이동시
 
     poetry export -f requirements.txt --output requirements.txt
@@ -44,11 +43,10 @@
 https://djecrety.ir/
 
     touch secrets.json
-    
+
     {
       "SECRET_KEY": "해당 키"
     }
-
 
 #### db.sqlite3에 migrate
 
