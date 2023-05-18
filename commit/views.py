@@ -9,29 +9,28 @@ from django.contrib import messages
 def home(request):
     if request.method == 'GET':
         all_commit = Commit.objects.all().order_by('-created_at')
-        return render(request, 'commit/main.html', {'commit': all_commit})
+        return render(request, 'main.html', {'commit': all_commit})
 
 
-def detail(request):
-    if request.method == 'GET':
-        # order_by: tweet이 생성된 시간 순으로 출력 해줌(하지만 안에 '-'를 넣어줌으로써 역순으로 정렬된다.)
-        all_commit = Commit.objects.all().order_by('-created_at')
-        return render(request, 'main.html', {'commit_': all_commit})
-
-    # elif request.method == 'POST':
-    #     users = request.user
-    #     all_commit = Commit()
-    #     all_commit.writer = users
-    #     all_commit.content = request.POST.get('my-content', '')
-    #     all_commit.save()
-    #     return redirect('/detail')
-
+# 상세글 보기
 
 def detail_commit(request, id):
     my_commit = Commit.objects.get(id=id)
     commit_comment = Comment.objects.filter(
-        commit_id=id).order_by('-created_at')
-    return render(request, 'detailpage.html', {'my_commit_': my_commit, 'comment': commit_comment})
+        commit_id=id).order_by('created_at')
+    return render(request, 'commit/detail.html', {'my_commit_': my_commit, 'comment': commit_comment})
+
+
+# 좋아요
+
+def likes(request, id):
+    if request.method == 'POST':
+        my_commit = Commit.objects.get(id=id)
+        my_commit.like_commit += 1
+        my_commit.save()
+        return redirect('/detail/'+str(id))
+
+# 댓글쓰기
 
 
 def detail_write_comment(request, id):
@@ -51,6 +50,8 @@ def detail_write_comment(request, id):
         messages.warning(request, '댓글 작성을 위해서는 로그인이 필요합니다')
         return redirect('/detail/'+str(id))
 
+# 댓글지우기
+
 
 @login_required
 def detail_delete_comment(request, id):
@@ -59,40 +60,44 @@ def detail_delete_comment(request, id):
     comment.delete()
     return redirect('/detail/'+str(current_commit))
 
+# 글쓰기
+
 
 def write_view(request):
     # 화면 띄워주기
     if request.method == 'GET':
-        return render(request, 'commit/write_view.html')
+        return render(request, 'commit/write.html')
 
     # 데이터베이스에 값 저장
     if request.method == 'POST':
         user = request.user
         my_commit = Commit()
+        my_commit.category = request.POST.get('category', '')
         my_commit.writer = user
         my_commit.title = request.POST.get('my-title', '')
         my_commit.content = request.POST.get('my-content', '')
         my_commit.save()
         return redirect('/')
 
-# 게시글 수정함수
+# 게시글 수정
 
 
 def edit_view(request, id):
     my_commit = Commit.objects.get(id=id)
     if request.method == 'POST':
         user = request.user
-        my_commit = Commit()
         my_commit.writer = user
-        my_commit.title = request.POST.get('title', '')
-        my_commit.content = request.POST.get('content', '')
+        my_commit.title = request.POST.get('my-title', '')
+        my_commit.content = request.POST.get('my-content', '')
         my_commit.save()
-        return render(request, 'commit/detail.html', {'commit': my_commit})
+        return redirect('/detail/'+str(id))
     elif request.method == 'GET':
         return render(request, 'commit/edit.html', {'commit': my_commit})
 
+# 글지우기
 
-def delete_view(request):
-    """
-    게시글 삭제. 남는 사람이 하는걸로 !
-    """
+
+def delete_view(request, id):
+    my_commit = Commit.objects.get(id=id)
+    my_commit.delete()
+    return redirect('/')

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Co.Meet ⎜ Sign Up</title>
+    <link rel="stylesheet" href="/static/css.css">
+    <link rel="stylesheet" href="/static/taeyeon2.css">
+  </head>
+
+  <body>
+    <section>
+      <div class="form-box">
+        <div class="form-value">
+          <form action="/sign_up/" method='post'>
+            {% csrf_token %}
+            <a href="{% url 'commit:home' %}" class='login_logo' sytle="text-decoration:none;">
+              <span class="co_login">Co.</span>
+              <span class="meet_login">Meet</span></a>
+            <div class="inputbox">
+              <input type="text" required="required" id="username" name="username">
+              <label for="">Name</label>
+            </div>
+            <div class="inputbox">
+              <input type="email" required="required" id="email" name="email">
+              <label for="">Email</label>
+            </div>
+            <div class="inputbox">
+              <input type="text" required="required" id="bio" name="bio">
+              <label for="">Profile message</label>
+            </div>
+            <div class="inputbox">
+              <input type="password" required="required" id="password" name="password">
+              <label for="">Password</label>
+            </div>
+            <div class="inputbox">
+              <input type="password" required="required" id="password2" name="password2">
+              <label for="">Password check</label>
+            </div>
+            {% if messages %}
+              {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+            <div class="news">
+              <label for=""><input type="checkbox">
+                Co.Meet 소식받기
+              </label>
+            </br>
+          </div>
+          <div class="service">
+            <label for=""><input type="checkbox">
+              서비스 약관 동의
+            </label>
+          </br>
+        </div>
+        <div class="info">
+          <label for=""><input type="checkbox">
+            개인정보 제공 동의
+          </label>
+        </div>
+        <button class="sign" type='submit'>Sign up
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+</section>
+</body>
+
+</html>
