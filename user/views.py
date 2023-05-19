@@ -6,6 +6,28 @@ from django.contrib import messages, auth
 from django.contrib.auth import get_user_model
 from .models import User
 from commit.models import Commit
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
+from user.serializers import UserSerializer
+
+
+class UserView(APIView):
+    def get(self, request):
+        pass
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "welcome"}, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"message": f"${serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+    def put(self, request):
+        pass
 
 
 # 로그인
@@ -63,56 +85,56 @@ from commit.models import Commit
 # 로그아웃
 
 
-@login_required
-def log_out_view(request):
-    auth.logout(request)
-    return redirect("/")
+# @login_required
+# def log_out_view(request):
+#     auth.logout(request)
+#     return redirect("/")
 
 
-# 내 프로필보기
+# # 내 프로필보기
 
 
-@login_required
-def my_page_view(request, id):
-    updated_user = User.objects.get(id=id)
-    my_commit = Commit.objects.filter(writer=request.user)
-    print(my_commit)
-    if request.method == "GET":
-        return render(
-            request, "user/mypage.html", {"user": updated_user, "commit": my_commit}
-        )
+# @login_required
+# def my_page_view(request, id):
+#     updated_user = User.objects.get(id=id)
+#     my_commit = Commit.objects.filter(writer=request.user)
+#     print(my_commit)
+#     if request.method == "GET":
+#         return render(
+#             request, "user/mypage.html", {"user": updated_user, "commit": my_commit}
+#         )
 
-    elif request.method == "POST":
-        username = request.POST.get("username", None)
-        email = request.POST.get("email", None)
-        bio = request.POST.get("bio", None)
+#     elif request.method == "POST":
+#         username = request.POST.get("username", None)
+#         email = request.POST.get("email", None)
+#         bio = request.POST.get("bio", None)
 
-        # 기존 유저정보 수정하는 방법
-        exist_user = get_user_model().objects.filter(username=username)
-        if exist_user:
-            messages.warning(request, "이미 존재하는 유저 이름입니다.")
-            return render(
-                request, "user/mypage.html", {"user": updated_user, "commit": my_commit}
-            )
-        else:
-            updated_user.username = username
-            updated_user.email = email
-            updated_user.bio = bio
-            updated_user.save()
-            messages.success(request, "프로필이 수정되었습니다.")
+#         # 기존 유저정보 수정하는 방법
+#         exist_user = get_user_model().objects.filter(username=username)
+#         if exist_user:
+#             messages.warning(request, "이미 존재하는 유저 이름입니다.")
+#             return render(
+#                 request, "user/mypage.html", {"user": updated_user, "commit": my_commit}
+#             )
+#         else:
+#             updated_user.username = username
+#             updated_user.email = email
+#             updated_user.bio = bio
+#             updated_user.save()
+#             messages.success(request, "프로필이 수정되었습니다.")
 
-            return render(
-                request, "user/mypage.html", {"user": updated_user, "commit": my_commit}
-            )
-
-
-# 다른사람 프로필보기
+#             return render(
+#                 request, "user/mypage.html", {"user": updated_user, "commit": my_commit}
+#             )
 
 
-def user_my_view(request, id):
-    my_user = User.objects.get(id=id)
-    my_commit = Commit.objects.filter(writer=my_user)
-    if request.method == "GET":
-        return render(
-            request, "user/userview.html", {"user": my_user, "commit": my_commit}
-        )
+# # 다른사람 프로필보기
+
+
+# def user_my_view(request, id):
+#     my_user = User.objects.get(id=id)
+#     my_commit = Commit.objects.filter(writer=my_user)
+#     if request.method == "GET":
+#         return render(
+#             request, "user/userview.html", {"user": my_user, "commit": my_commit}
+#         )

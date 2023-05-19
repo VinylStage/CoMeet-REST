@@ -16,6 +16,8 @@ tzdata = "^2023.3"
 djangorestframework = "^3.14.0"
 djangorestframework-simplejwt = "^5.2.2"
 django-nextjs = "^2.2.2"
+django-cors = "^0.1"
+django-cors-headers = "^4.0.0"
 
 
 [build-system]
